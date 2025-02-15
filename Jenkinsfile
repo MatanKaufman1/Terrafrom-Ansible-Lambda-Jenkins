@@ -1,8 +1,8 @@
 pipeline {
     agent any
     environment {
-        AWS_REGION = 'eu-central-1'
-        DOCKER_IMAGE = 'matankaufman/lambda-jenkins'
+        AWS_REGION = "${env.AWS_REGION}"
+        DOCKER_IMAGE = "${env.DOCKER_IMAGE}" 
         DOCKER_CREDENTIALS_ID = 'DOCKER_TOKEN'
     }
     stages {
