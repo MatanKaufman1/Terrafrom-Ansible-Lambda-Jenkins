@@ -87,9 +87,13 @@ Run the Docker container:
 This web app interacts with the following AWS Lambda functions:
 
 **Create Project:** Creates a new project with the given name and suffix.
+
 **Create User:** Creates a new user and stores the data in an S3 bucket.
+
 **Send WhatsApp:** Sends a WhatsApp message using an external service.
+
 **CSV to Excel:** Converts CSV files uploaded to S3 into Excel format.
+
 **Backup:** Backs up files uploaded through the API to S3.
 
 ### Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
