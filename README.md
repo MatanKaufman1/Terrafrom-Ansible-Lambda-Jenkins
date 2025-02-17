@@ -82,35 +82,36 @@ Run the Docker container:
 
     The application will be available at http://localhost:5000.
 
-Lambda Functions:
+## Lambda Functions:
 
 This web app interacts with the following AWS Lambda functions:
 
-    Create Project: Creates a new project with the given name and suffix.
-    Create User: Creates a new user and stores the data in an S3 bucket.
-    Send WhatsApp: Sends a WhatsApp message using an external service.
-    CSV to Excel: Converts CSV files uploaded to S3 into Excel format.
-    Backup: Backs up files uploaded through the API to S3.
+**Create Project:** Creates a new project with the given name and suffix.
+**Create User:** Creates a new user and stores the data in an S3 bucket.
+**Send WhatsApp:** Sends a WhatsApp message using an external service.
+**CSV to Excel:** Converts CSV files uploaded to S3 into Excel format.
+**Backup:** Backs up files uploaded through the API to S3.
 
 Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
-API Endpoints
 
-    POST /api/projects: Creates a new project by invoking the create_project Lambda function.
-    POST /api/users: Creates a new user and uploads the data to S3.
-    POST /api/backup: Uploads a file to S3 for backup.
-    POST /api/whatsapp/send: Sends a WhatsApp message using the send_whatsapp Lambda function.
-    POST /api/convert/csv-to-excel: Converts a CSV file to Excel format and returns it.
-    GET /api/info/<resource_id>: Retrieves processed information related to a resource.
-    /health: Health check endpoint for the application.
+**API Endpoints:**
 
-Deployment
+**POST /api/projects:** Creates a new project by invoking the create_project Lambda function.
+**POST /api/users:** Creates a new user and uploads the data to S3.
+**POST /api/backup:** Uploads a file to S3 for backup.
+**POST /api/whatsapp/send:** Sends a WhatsApp message using the send_whatsapp Lambda function.
+**POST /api/convert/csv-to-excel:** Converts a CSV file to Excel format and returns it.
+**/health:** Health check endpoint for the application.
+
+## Deployment:
 
 To deploy the application and Lambda functions, use Terraform and Ansible. The Terraform configuration in infrastructure/terraform provisions the required AWS resources, and Ansible handles the server configuration for Jenkins and GitLab.
-Example Terraform Command:
 
-terraform init
-terraform apply
+**Example Terraform Command**:
 
-Testing
+    terraform init
+    terraform apply
+
+## Testing
 
 Unit tests for Lambda functions are available in the lambda_handler/tests directory. You can use pytest to run the tests.
