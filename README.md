@@ -92,7 +92,7 @@ This web app interacts with the following AWS Lambda functions:
 **CSV to Excel:** Converts CSV files uploaded to S3 into Excel format.
 **Backup:** Backs up files uploaded through the API to S3.
 
-## Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
+### Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
 
 **POST /api/projects:** Creates a new project by invoking the create_project Lambda function.
 **POST /api/users:** Creates a new user and uploads the data to S3.
