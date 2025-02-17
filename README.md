@@ -1,6 +1,6 @@
 # Flask Web App with AWS Lambda Integration
 
-## Overview:
+### Overview:
 
 This project is a Flask-based web application that interacts with various AWS Lambda functions. It allows users to perform several operations including creating projects, managing users, sending WhatsApp messages, converting CSV files to Excel, and performing backups. The application communicates with Lambda functions deployed on AWS to handle backend tasks.
 Project Structure
@@ -95,10 +95,15 @@ This web app interacts with the following AWS Lambda functions:
 ### Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
 
 **POST /api/projects:** Creates a new project by invoking the create_project Lambda function.
+
 **POST /api/users:** Creates a new user and uploads the data to S3.
+
 **POST /api/backup:** Uploads a file to S3 for backup.
+
 **POST /api/whatsapp/send:** Sends a WhatsApp message using the send_whatsapp Lambda function.
+
 **POST /api/convert/csv-to-excel:** Converts a CSV file to Excel format and returns it.
+
 **/health:** Health check endpoint for the application.
 
 ## Deployment:
