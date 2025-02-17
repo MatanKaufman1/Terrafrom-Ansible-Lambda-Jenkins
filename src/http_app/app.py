@@ -12,7 +12,7 @@ def get_client():
         's3',
         region_name='eu-central-1'
     )
-S3_BUCKET_NAME = 'bucket-matan'
+S3_BUCKET_NAME = 'BUCKET_NAME'
 
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
 
