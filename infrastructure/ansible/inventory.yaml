@@ -5,17 +5,13 @@ all:
         gitlab_host:
           ansible_host: 3.70.239.221
           ansible_user: ubuntu
-          ansible_ssh_private_key_file: /home/matan/Downloads/k8s.pem
+          ansible_ssh_private_key_file: path/to/pem-file
 
     jenkins:
       hosts:
         jenkins_hosts:
           ansible_host: 3.120.245.185
           ansible_user: ubuntu
-          ansible_ssh_private_key_file: /home/matan/Downloads/k8s.pem
+          ansible_ssh_private_key_file: path/to/pem-file
 
 
-
-  #vars:
-  #  ansible_ssh_private_key_file: /home/matan/Downloads/k8s.pem
-  #  ansible_user: ubuntu
