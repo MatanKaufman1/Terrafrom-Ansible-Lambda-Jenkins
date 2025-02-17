@@ -1,4 +1,4 @@
-# Flask Web App with AWS Lambda Integration
+#  Web App with AWS Lambda Integration
 
 ### Overview:
 
