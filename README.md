@@ -5,62 +5,63 @@
 This project is a Flask-based web application that interacts with various AWS Lambda functions. It allows users to perform several operations including creating projects, managing users, sending WhatsApp messages, converting CSV files to Excel, and performing backups. The application communicates with Lambda functions deployed on AWS to handle backend tasks.
 Project Structure
 
-.
-├── Dockerfile
-├── infrastructure
-│   ├── ansible
-│   └── terraform
-├── Jenkinsfile
-├── lambda_handler
-│   ├── backup
-│   ├── create_project
-│   ├── create_user
-│   ├── csv_to_excel
-│   ├── get_info
-│   ├── send_whatsapp
-│   └── tests
-├── README.md
-└── src
-    └── http_app
-        ├── app.py
-        ├── requirements.txt
-        └── templates
-            └── index.html
+## Structure:
+
+    ├── Dockerfile
+    ├── infrastructure
+    │   ├── ansible
+    │   └── terraform
+    ├── Jenkinsfile
+    ├── lambda_handler
+    │   ├── backup
+    │   ├── create_project
+    │   ├── create_user
+    │   ├── csv_to_excel
+    │   ├── get_info
+    │   ├── send_whatsapp
+    │   └── tests
+    ├── README.md
+    └── src
+        └── http_app
+            ├── app.py
+            ├── requirements.txt
+            └── templates
+                └── index.html
 
 ## Key Components:
 
-    Dockerfile: Defines the image build process for the Flask app.
-    lambda_handler: Contains the individual Python Lambda handlers (e.g., create project, backup, CSV to Excel conversion, etc.).
-    infrastructure: Holds Ansible and Terraform configurations for provisioning infrastructure.
-    src/http_app: Contains the Flask app with routes that trigger AWS Lambda functions.
-    Jenkinsfile: Defines the pipeline for continuous integration and deployment.
+Dockerfile: Defines the image build process for the Flask app.
+lambda_handler: Contains the individual Python Lambda handlers (e.g., create project, backup, CSV to Excel conversion, etc.).
+infrastructure: Holds Ansible and Terraform configurations for provisioning infrastructure.
+src/http_app: Contains the Flask app with routes that trigger AWS Lambda functions.
+Jenkinsfile: Defines the pipeline for continuous integration and deployment.
 
 ## Features:
 
-    Create Projects: Calls a Lambda function to create a new project.
-    Create Users: Stores user data in AWS S3 and triggers Lambda for further processing.
-    Backup Files: Uploads files to AWS S3 for backup.
-    Send WhatsApp Messages: Invokes a Lambda function to send messages using the WhatsApp API.
-    CSV to Excel Conversion: Converts CSV files uploaded to S3 into Excel files.
-    Health Check Endpoint: Exposes an endpoint (/health) for monitoring the status of the application.
+Create Projects: Calls a Lambda function to create a new project.
+Create Users: Stores user data in AWS S3 and triggers Lambda for further processing.
+Backup Files: Uploads files to AWS S3 for backup.
+Send WhatsApp Messages: Invokes a Lambda function to send messages using the WhatsApp API.
+CSV to Excel Conversion: Converts CSV files uploaded to S3 into Excel files.
+Health Check Endpoint: Exposes an endpoint (/health) for monitoring the status of the application.
 
 ## Prerequisites:
 
-    AWS Account: Ensure you have an AWS account and IAM permissions to manage Lambda, S3, and other required services.
-    Docker: To run the app in a containerized environment.
-    Terraform: To provision and manage infrastructure.
-    Ansible: Used to configure and manage servers like Jenkins and GitLab.
-    Jenkins: For CI/CD pipeline automation.
+AWS Account: Ensure you have an AWS account and IAM permissions to manage Lambda, S3, and other required services.
+Docker: To run the app in a containerized environment.
+Terraform: To provision and manage infrastructure.
+Ansible: Used to configure and manage servers like Jenkins and GitLab.
+Jenkins: For CI/CD pipeline automation.
 
 ## Setup and Installation:
 
-    Clone this repository:
+Clone this repository:
 
-git clone https://github.com/MatanKaufman1/Terrafrom-Ansible-Lambda-Jenkins.git
+    git clone https://github.com/MatanKaufman1/Terrafrom-Ansible-Lambda-Jenkins.git
 
 Build the Docker image:
 
-docker build -t flask-lambda-webapp .
+    docker build -t flask-lambda-webapp .
 
 Run the Docker container:
 
@@ -68,7 +69,7 @@ Run the Docker container:
 
     The application will be available at http://localhost:5000.
 
-Lambda Functions
+Lambda Functions:
 
 This web app interacts with the following AWS Lambda functions:
 
