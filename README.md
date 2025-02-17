@@ -42,20 +42,29 @@ Project Structure
 
 ## Features:
 
-Create Projects: Calls a Lambda function to create a new project.
-Create Users: Stores user data in AWS S3 and triggers Lambda for further processing.
-Backup Files: Uploads files to AWS S3 for backup.
-Send WhatsApp Messages: Invokes a Lambda function to send messages using the WhatsApp API.
-CSV to Excel Conversion: Converts CSV files uploaded to S3 into Excel files.
-Health Check Endpoint: Exposes an endpoint (/health) for monitoring the status of the application.
+**Create Projects**: Calls a Lambda function to create a new project.
+
+**Create Users**: Stores user data in AWS S3 and triggers Lambda for further processing.
+
+**Backup Files**: Uploads files to AWS S3 for backup.
+
+**Send WhatsApp Messages**: Invokes a Lambda function to send messages using the WhatsApp API.
+
+**CSV to Excel Conversion**: Converts CSV files uploaded to S3 into Excel files.
+
+**Health Check Endpoint**: Exposes an endpoint (/health) for monitoring the status of the application.
 
 ## Prerequisites:
 
-AWS Account: Ensure you have an AWS account and IAM permissions to manage Lambda, S3, and other required services.
-Docker: To run the app in a containerized environment.
-Terraform: To provision and manage infrastructure.
-Ansible: Used to configure and manage servers like Jenkins and GitLab.
-Jenkins: For CI/CD pipeline automation.
+**AWS Account**: Ensure you have an AWS account and IAM permissions to manage Lambda, S3, and other required services.
+
+**Docker**: To run the app in a containerized environment.
+
+**Terraform**: To provision and manage infrastructure.
+
+**Ansible**: Used to configure and manage servers like Jenkins and GitLab.
+
+**Jenkins**: For CI/CD pipeline automation.
 
 ## Setup and Installation:
 
