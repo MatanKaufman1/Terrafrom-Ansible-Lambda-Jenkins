@@ -1,0 +1,95 @@
+---
+- name: Install and Configure Jenkins with Docker
+  hosts: jenkins
+  become: yes
+  vars:
+    docker_compose_version: '1.29.2'
+    jenkins_image: "jenkins/jenkins:lts"
+    jenkins_home: "/home/{{ ansible_user }}/jenkins_compose/jenkins_configuration"
+  tasks:
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Add user to 'docker' group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Reset SSH connection to apply group changes
+      meta: reset_connection
+
+    - name: Determine system architecture
+      set_fact:
+        arch_map:
+          x86_64: 'x86_64'
+          aarch64: 'aarch64'
+        system_arch: "{{ arch_map[ansible_architecture] | default('x86_64') }}"
+
+    - name: Download Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system | lower }}-{{ system_arch }}"
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: Create Jenkins configuration directory
+      file:
+        path: "{{ jenkins_home }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+
+    - name: Run Jenkins container
+      docker_container:
+        name: jenkins
+        image: "{{ jenkins_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "8080:8080"
+          - "50000:50000"
+        volumes:
+          - "{{ jenkins_home }}:/var/jenkins_home"
+          - "/var/run/docker.sock:/var/run/docker.sock"
+        user: "root"
+
+
+    - name: Wait for Jenkins to initialize
+      pause:
+        minutes: 1
+
+    - name: Fetch Jenkins initial admin password
+      community.docker.docker_container_exec:
+        container: jenkins
+        command: cat /var/jenkins_home/secrets/initialAdminPassword
+      register: jenkins_password
+
+    - name: Display Jenkins initial admin password
+      ansible.builtin.debug:
+        msg: "Jenkins Initial Admin Password: {{ jenkins_password.stdout }}"

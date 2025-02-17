@@ -1,0 +1,102 @@
+---
+- name: Install and Configure GitLab in Docker
+  hosts: gitlab
+  become: yes
+  vars:
+    gitlab_image: 'gitlab/gitlab-ce:latest'
+    gitlab_container_name: 'gitlab'
+    gitlab_external_url: 'http://{{ ansible_host }}'
+    gitlab_http_port: 80
+    gitlab_https_port: 443
+    gitlab_ssh_port: 2424
+    container_ssh_port: 22
+    docker_compose_version: '1.29.2'
+  tasks:
+    - name: Update APT package index
+      apt:
+        update_cache: yes
+
+    - name: Install required packages
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+        state: present
+
+    - name: Add Docker GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: Add Docker repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+
+    - name: Install Docker
+      apt:
+        name: docker-ce
+        state: present
+
+    - name: Add user to 'docker' group
+      user:
+        name: "{{ ansible_user }}"
+        groups: docker
+        append: yes
+
+    - name: Reset SSH connection to apply group changes
+      meta: reset_connection
+
+    - name: Determine system architecture
+      set_fact:
+        arch_map:
+          x86_64: 'x86_64'
+          aarch64: 'aarch64'
+        system_arch: "{{ arch_map[ansible_architecture] | default('x86_64') }}"
+
+    - name: Download Docker Compose
+      get_url:
+        url: "https://github.com/docker/compose/releases/download/{{ docker_compose_version }}/docker-compose-{{ ansible_system | lower }}-{{ system_arch }}"
+        dest: /usr/local/bin/gitlab-docker-compose
+        mode: '0755'
+
+    - name: Create GitLab configuration directory
+      file:
+        path: /srv/gitlab
+        state: directory
+        mode: '0755'
+
+    - name: Run GitLab container
+      docker_container:
+        name: "{{ gitlab_container_name }}"
+        image: "{{ gitlab_image }}"
+        state: started
+        restart_policy: always
+        ports:
+          - "{{ gitlab_http_port }}:80"
+          - "{{ gitlab_https_port }}:443"
+          - "{{ gitlab_ssh_port }}:22"
+        volumes:
+          - /srv/gitlab/config:/etc/gitlab
+          - /srv/gitlab/logs:/var/log/gitlab
+          - /srv/gitlab/data:/var/opt/gitlab
+        env:
+          GITLAB_OMNIBUS_CONFIG: |
+            external_url '{{ gitlab_external_url }}'
+            gitlab_rails['gitlab_shell_ssh_port'] = {{ gitlab_ssh_port }}
+
+    - name: Wait for GitLab to initialize
+      pause:
+        minutes: 2
+
+    - name: Fetch GitLab initial root password
+      community.docker.docker_container_exec:
+        container: "{{ gitlab_container_name }}"
+        command: cat /etc/gitlab/initial_root_password
+      register: gitlab_password
+
+    - name: Display GitLab initial root password
+      ansible.builtin.debug:
+        msg: "GitLab Initial Root Password: {{ gitlab_password.stdout }}"
