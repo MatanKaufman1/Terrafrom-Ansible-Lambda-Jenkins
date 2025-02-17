@@ -31,9 +31,13 @@ Project Structure
 ## Key Components:
 
 Dockerfile: Defines the image build process for the Flask app.
+
 lambda_handler: Contains the individual Python Lambda handlers (e.g., create project, backup, CSV to Excel conversion, etc.).
+
 infrastructure: Holds Ansible and Terraform configurations for provisioning infrastructure.
+
 src/http_app: Contains the Flask app with routes that trigger AWS Lambda functions.
+
 Jenkinsfile: Defines the pipeline for continuous integration and deployment.
 
 ## Features:
