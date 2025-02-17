@@ -5,7 +5,6 @@ import os
 from datetime import datetime
 import boto3
 import json
-#from lambda_handler.create_user.lambda_function import s3_client
 
 app = Flask(__name__)
 def get_client():
@@ -15,7 +14,7 @@ def get_client():
     )
 S3_BUCKET_NAME = 'bucket-matan'
 
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  
 
 @app.route('/')
 def home():
@@ -36,8 +35,8 @@ def create_project():
         }
         lambda_client = boto3.client('lambda', region_name='eu-central-1')
         response = lambda_client.invoke(
-            FunctionName='create_project',  # Replace with your Lambda function name
-            InvocationType='RequestResponse',  # Synchronous invocation
+            FunctionName='create_project',  
+            InvocationType='RequestResponse',  
             Payload=json.dumps(lambda_payload)
         )
         response_payload = json.loads(response['Payload'].read())
@@ -86,7 +85,7 @@ def create_user():
 def backup_file():
     BACKUP_PREFIX = 'backup_files/'
     try:
-        # Check if a file is included in the request
+        
         if 'file' not in request.files:
             return jsonify({'error': 'No file provided'}), 400
 
@@ -94,7 +93,7 @@ def backup_file():
         if file.filename == '':
             return jsonify({'error': 'No file selected'}), 400
 
-        # Generate S3 key with the prefix
+        
         filename = secure_filename(file.filename)
         s3_key = f"{BACKUP_PREFIX}{filename}"
 
@@ -125,18 +124,18 @@ def send_whatsapp():
             "phone": phone,
             "message": message
         }
-        # Invoke the Lambda function
+        
         lambda_function_name = "send_whatsapp"
         response = lambda_client.invoke(
             FunctionName=lambda_function_name,
-            InvocationType='RequestResponse',  # Use 'Event' for async invocation if needed
+            InvocationType='RequestResponse',  
             Payload=json.dumps(payload)
         )
 
-        # Read the response from the Lambda function
+        
         response_payload = json.loads(response['Payload'].read().decode('utf-8'))
 
-        # Return the Lambda function's response to the frontend
+        
         return jsonify(response_payload)
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -162,7 +161,6 @@ def convert_csv_to_excel():
         s3_key = f"{CSV_PREFIX}{filename}"
         s3.put_object(Bucket=S3_BUCKET_NAME, Key=s3_key, Body=file)
 
-        #  Fetch the latest file from "excel_file/" prefix
         time.sleep(5)
         response = s3.list_objects_v2(Bucket=S3_BUCKET_NAME, Prefix=EXCEL_PREFIX)
 
@@ -174,7 +172,6 @@ def convert_csv_to_excel():
         latest_file_key = latest_file['Key']
         latest_file_content = s3.get_object(Bucket=S3_BUCKET_NAME, Key=latest_file_key)['Body'].read()
 
-        # Return the latest file as a downloadable response
         response = Response(latest_file_content, mimetype='application/octet-stream')
         response.headers['Content-Disposition'] = f'attachment; filename={latest_file_key.split("/")[-1]}'
         return response
@@ -190,7 +187,7 @@ def get_info(resource_id):
     retrieves the processed file from S3, and sends it back to the user.
     """
     s3_client = boto3.client('s3')
-    bucket_name = "bucket-matan"
+    bucket_name = BUCKET_NAME
     upload_prefix = "wikipedia_files/"
     processed_file_key = "wikipedia_file.txt"
     file_name = f"{resource_id.replace(' ', '_')}.txt"
@@ -203,15 +200,15 @@ def get_info(resource_id):
         os.remove(local_file_path)
         print(f"File uploaded to S3: {upload_key}")
 
-        # Step 2: Poll for the processed file
+      
         print(f"Waiting for processed file: {processed_file_key}")
         time.sleep(5)
-        for _ in range(10):  # Poll up to 10 times, adjust as needed
+        for _ in range(10): 
             response = s3_client.list_objects_v2(Bucket=bucket_name, Prefix=processed_file_key)
             if "Contents" in response:
                 print(f"Processed file found: {processed_file_key}")
                 break
-            time.sleep(5)  # Wait 5 seconds before retrying
+            time.sleep(5) 
         else:
             return jsonify({"error": "Processed file not available after timeout."}), 504
 
@@ -232,7 +229,7 @@ def get_info(resource_id):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return jsonify({"error": f"An error occurred: {str(e)}"}), 500
-    # test 2
+  
 
 
 @app.route('/health')
