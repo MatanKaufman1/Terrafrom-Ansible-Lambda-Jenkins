@@ -1,124 +1,102 @@
-# Lambda-Powered Flask Web App
+# Flask Web App with AWS Lambda Integration
 
-## Overview
-This project is a Flask-based web application that interacts with multiple AWS Lambda functions and Amazon S3. It provides APIs for creating projects, user management, file backups, WhatsApp messaging, CSV-to-Excel conversion, and Wikipedia file processing.
+## Overview:
 
-## Features
-- **Project Creation**: Calls a Lambda function to create projects.
-- **User Management**: Stores user data in an S3 bucket.
-- **File Backup**: Uploads files to an S3 bucket for backup.
-- **WhatsApp Messaging**: Sends WhatsApp messages via a Lambda function.
-- **CSV to Excel Conversion**: Uploads CSV files to S3 and retrieves processed Excel files.
-- **Wikipedia File Processing**: Uploads and retrieves processed Wikipedia data via Lambda and S3.
-- **Health Check**: Returns application status and timestamp.
+This project is a Flask-based web application that interacts with various AWS Lambda functions. It allows users to perform several operations including creating projects, managing users, sending WhatsApp messages, converting CSV files to Excel, and performing backups. The application communicates with Lambda functions deployed on AWS to handle backend tasks.
+Project Structure
 
-## Technologies Used
-- **Python** (Flask)
-- **AWS Lambda**
-- **Amazon S3**
-- **Boto3** (AWS SDK for Python)
+.
+├── Dockerfile
+├── infrastructure
+│   ├── ansible
+│   └── terraform
+├── Jenkinsfile
+├── lambda_handler
+│   ├── backup
+│   ├── create_project
+│   ├── create_user
+│   ├── csv_to_excel
+│   ├── get_info
+│   ├── send_whatsapp
+│   └── tests
+├── README.md
+└── src
+    └── http_app
+        ├── app.py
+        ├── requirements.txt
+        └── templates
+            └── index.html
 
-## Prerequisites
-Ensure you have the following installed and configured:
-- Python 3.x
-- AWS CLI configured with credentials
-- Required Python packages (install with `pip install -r requirements.txt`)
+## Key Components:
 
-## Installation
-1. Clone the repository:
-   ```sh
-   git clone <repository-url>
-   cd <repository-folder>
-   ```
-2. Install dependencies:
-   ```sh
-   pip install -r requirements.txt
-   ```
-3. Set up AWS credentials:
-   ```sh
-   aws configure
-   ```
-4. Run the Flask app:
-   ```sh
-   python app.py
-   ```
+    Dockerfile: Defines the image build process for the Flask app.
+    lambda_handler: Contains the individual Python Lambda handlers (e.g., create project, backup, CSV to Excel conversion, etc.).
+    infrastructure: Holds Ansible and Terraform configurations for provisioning infrastructure.
+    src/http_app: Contains the Flask app with routes that trigger AWS Lambda functions.
+    Jenkinsfile: Defines the pipeline for continuous integration and deployment.
 
-## API Endpoints
-### 1. Home Page
-- **GET /**
-- Returns the main page.
+## Features:
 
-### 2. Create Project
-- **POST /api/projects**
-- **Request Body:**
-  ```json
-  {
-    "project_name": "my_project",
-    "suffix": "v1"
-  }
-  ```
-- Calls the `create_project` Lambda function.
+    Create Projects: Calls a Lambda function to create a new project.
+    Create Users: Stores user data in AWS S3 and triggers Lambda for further processing.
+    Backup Files: Uploads files to AWS S3 for backup.
+    Send WhatsApp Messages: Invokes a Lambda function to send messages using the WhatsApp API.
+    CSV to Excel Conversion: Converts CSV files uploaded to S3 into Excel files.
+    Health Check Endpoint: Exposes an endpoint (/health) for monitoring the status of the application.
 
-### 3. Create User
-- **POST /api/users**
-- **Request Body:**
-  ```json
-  {
-    "username": "JohnDoe",
-    "email": "john@example.com",
-    "password": "securepassword"
-  }
-  ```
-- Stores user data in S3 under `create_user/`.
+## Prerequisites:
 
-### 4. Backup File
-- **POST /api/backup**
-- **Request:** Multipart form with `file`.
-- Uploads file to S3 under `backup_files/`.
+    AWS Account: Ensure you have an AWS account and IAM permissions to manage Lambda, S3, and other required services.
+    Docker: To run the app in a containerized environment.
+    Terraform: To provision and manage infrastructure.
+    Ansible: Used to configure and manage servers like Jenkins and GitLab.
+    Jenkins: For CI/CD pipeline automation.
 
-### 5. Send WhatsApp Message
-- **POST /api/whatsapp/send**
-- **Request Body:**
-  ```json
-  {
-    "phone": "+1234567890",
-    "message": "Hello from Lambda!"
-  }
-  ```
-- Calls the `send_whatsapp` Lambda function.
+## Setup and Installation:
 
-### 6. Convert CSV to Excel
-- **POST /api/convert/csv-to-excel**
-- **Request:** Multipart form with a `.csv` file.
-- Uploads CSV to S3, waits for an Excel file, and returns the processed file.
+    Clone this repository:
 
-### 7. Get Wikipedia Processed Info
-- **GET /api/info/<resource_id>**
-- Uploads a text file with `resource_id` to S3, triggers Lambda, and retrieves the processed file.
+git clone https://github.com/MatanKaufman1/Terrafrom-Ansible-Lambda-Jenkins.git
 
-### 8. Health Check
-- **GET /health**
-- Returns:
-  ```json
-  {
-    "status": "healthy",
-    "timestamp": "2025-02-17T12:34:56.789Z"
-  }
-  ```
+Build the Docker image:
 
-## Environment Variables
-- `AWS_REGION=eu-central-1`
-- `S3_BUCKET_NAME=bucket-matan`
+docker build -t flask-lambda-webapp .
 
-## Deployment
-For production deployment, consider using **Gunicorn** with **NGINX**:
-```sh
-pip install gunicorn
-```
-Run the app with:
-```sh
-gunicorn -w 4 -b 0.0.0.0:5000 app:app
-```
+Run the Docker container:
 
+    docker run -p 5000:5000 flask-lambda-webapp
 
+    The application will be available at http://localhost:5000.
 
+Lambda Functions
+
+This web app interacts with the following AWS Lambda functions:
+
+    Create Project: Creates a new project with the given name and suffix.
+    Create User: Creates a new user and stores the data in an S3 bucket.
+    Send WhatsApp: Sends a WhatsApp message using an external service.
+    CSV to Excel: Converts CSV files uploaded to S3 into Excel format.
+    Backup: Backs up files uploaded through the API to S3.
+
+Each of these Lambda functions is invoked through the web app’s RESTful API endpoints.
+API Endpoints
+
+    POST /api/projects: Creates a new project by invoking the create_project Lambda function.
+    POST /api/users: Creates a new user and uploads the data to S3.
+    POST /api/backup: Uploads a file to S3 for backup.
+    POST /api/whatsapp/send: Sends a WhatsApp message using the send_whatsapp Lambda function.
+    POST /api/convert/csv-to-excel: Converts a CSV file to Excel format and returns it.
+    GET /api/info/<resource_id>: Retrieves processed information related to a resource.
+    /health: Health check endpoint for the application.
+
+Deployment
+
+To deploy the application and Lambda functions, use Terraform and Ansible. The Terraform configuration in infrastructure/terraform provisions the required AWS resources, and Ansible handles the server configuration for Jenkins and GitLab.
+Example Terraform Command:
+
+terraform init
+terraform apply
+
+Testing
+
+Unit tests for Lambda functions are available in the lambda_handler/tests directory. You can use pytest to run the tests.
