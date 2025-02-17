@@ -4,7 +4,7 @@ import json
 import boto3
 import requests
 
-GITLAB_API_BASE_URL =  "http://3.126.51.24:80/api/v4"
+GITLAB_API_BASE_URL =  "https://gitlab.com/api/v4"
 GITLAB_TOKEN = os.getenv("GITLAB_TOKEN")
 
 HEADERS = {
@@ -112,4 +112,4 @@ def create_user_repository(username):
         print(f"Repository created for {username}: {repo_url}")
     else:
         print(f"Failed to create repository for {username}: {response.status_code}, {response.json()}")
-    # sharon and matan
+

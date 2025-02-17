@@ -36,4 +36,3 @@ def lambda_handler(event, context):
             "statusCode": 500,
             "body": f"An error occurred: {str(e)}"
         }
-    # sharon and matan finals

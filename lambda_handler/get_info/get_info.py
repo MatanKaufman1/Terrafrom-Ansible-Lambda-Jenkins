@@ -1,18 +1,15 @@
 import wikipediaapi
 import boto3
 import os
-def test():
-    pass
+
 def lambda_handler(event, context):
     s3_client = boto3.client('s3')
-    bucket_name = "bucket-matan"
+    bucket_name = "BUCKET_NAME"
     wikipedia_file_key = "wikipedia_file.txt"
     prefix = "wikipedia_files/"
 
     try:
         print("Received event:", event)
-        # test 6
-        # Retrieve the S3 object key from the event
         object_key = event['Records'][0]['s3']['object']['key']
         print(f"Processing S3 object: {object_key}")
 
@@ -45,7 +42,7 @@ def lambda_handler(event, context):
         if page.exists():
             print(f"Found Wikipedia page for subject: {subject}")
 
-            # Download or create the wikipedia_file.txt
+
             try:
                 local_wikipedia_file = f"/tmp/{wikipedia_file_key}"
                 s3_client.download_file(bucket_name, wikipedia_file_key, local_wikipedia_file)
@@ -58,12 +55,12 @@ def lambda_handler(event, context):
                 else:
                     raise
 
-            # Append the summary to the local file
+
             with open(local_wikipedia_file, "a", encoding="utf-8") as file:
                 file.write(f"Summary for {subject}:\n{top_of_page}\n\n")
             print("Appended summary to local wikipedia_file.txt.")
 
-            # Upload the updated file back to S3
+
             s3_client.upload_file(local_wikipedia_file, bucket_name, wikipedia_file_key)
             print("Uploaded updated wikipedia_file.txt to S3.")
 
@@ -86,4 +83,4 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'body': f"An error occurred: {str(e)}"
         }
-# add sharon and matan 2
+

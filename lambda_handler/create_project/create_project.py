@@ -4,12 +4,11 @@ import requests
 
 GITLAB_API_BASE_URL = "https://gitlab.com/api/v4"
 GITLAB_TOKEN = os.getenv("GITLAB_TOKEN")
-GITLAB_USERNAME = 'matankaufman1'
+GITLAB_USERNAME = 'MY_USER_NAME'
 
 
 def lambda_handler(event, context):
     try:
-        # Extract parameters from the event
         project_name = event.get('project_name')
         suffix = event.get('suffix')
         if not project_name or not suffix:
@@ -18,7 +17,6 @@ def lambda_handler(event, context):
                 'body': json.dumps({'message': 'Project name and suffix are required'})
             }
 
-        # Validate the suffix
         allowed_suffixes = ['c', 'py', 'yaml']
         if suffix not in allowed_suffixes:
             return {
@@ -26,12 +24,11 @@ def lambda_handler(event, context):
                 'body': json.dumps({'message': f'Invalid suffix. Allowed values are: {", ".join(allowed_suffixes)}'})
             }
 
-        # Step 1: Create a new GitLab project
         project = create_gitlab_project(project_name)
         project_id = project['id']
         print(f"Created GitLab project: {project_name} with ID: {project_id}")
 
-        # Step 2: Create the file content
+
         file_name = f"main.{suffix}"
         file_content = ""  # Empty file
         upload_file_to_gitlab(project_id, file_name, file_content)

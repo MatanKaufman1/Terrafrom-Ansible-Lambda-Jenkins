@@ -2,7 +2,7 @@ import os
 import boto3
 import datetime
 
-S3_BUCKET_NAME = 'bucket-matan'
+S3_BUCKET_NAME = 'BUCKET_NAME'
 BACKUP_PREFIX = 'backup_files/'
 DAILY_BACKUP_PREFIX = 'daily_backups/'
 WEEKLY_BACKUP_PREFIX = 'weekly_backups/'
@@ -24,13 +24,13 @@ def lambda_handler(event, context):
         files = response['Contents']
         print(f"Found {len(files)} files to backup.")
 
-        # Iterate over files and create daily backups
+        
         for file in files:
             file_key = file['Key']
             file_name = os.path.basename(file_key)
             today_backup_key = f"{DAILY_BACKUP_PREFIX}{today}/{file_name}"
 
-            # Copy to daily backup location
+           
             s3_client.copy_object(
                 Bucket=S3_BUCKET_NAME,
                 CopySource={'Bucket': S3_BUCKET_NAME, 'Key': file_key},
@@ -38,7 +38,7 @@ def lambda_handler(event, context):
             )
             print(f"Daily backup created: {today_backup_key}")
 
-            # Create weekly backup on Sundays
+        
             if day_of_week == 6:  # Sunday
                 weekly_backup_key = f"{WEEKLY_BACKUP_PREFIX}{today}/{file_name}"
                 s3_client.copy_object(
@@ -48,7 +48,7 @@ def lambda_handler(event, context):
                 )
                 print(f"Weekly backup created: {weekly_backup_key}")
 
-            # Create monthly backup on the first day of the month
+          
             if first_day_of_month:
                 monthly_backup_key = f"{MONTHLY_BACKUP_PREFIX}{today}/{file_name}"
                 s3_client.copy_object(
